@@ -1,4 +1,4 @@
-package de.androidcrypto.bleserverblessedpart3;
+package de.androidcrypto.bleserverblessedpart4;
 
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;

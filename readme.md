@@ -1,6 +1,6 @@
-# Bluetooth Low Energy Server with BLESSED-ANDROID library (part 3)
+# Bluetooth Low Energy Server with BLESSED-ANDROID library (part 4)
 
-This is part 3 of the BLE server (peripheral) example using the code in 
+This is part 4 of the BLE server (peripheral) example using the code in 
 https://github.com/weliem/bluetooth-server-example.
 
 Recent server and client apps:

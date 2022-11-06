@@ -1,6 +1,4 @@
-package de.androidcrypto.bleserverblessedpart3;
-
-import static com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8;
+package de.androidcrypto.bleserverblessedpart4;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -18,7 +16,6 @@ import android.os.ParcelUuid;
 import androidx.annotation.NonNull;
 
 import com.welie.blessed.AdvertiseError;
-import com.welie.blessed.BluetoothBytesParser;
 import com.welie.blessed.BluetoothCentral;
 import com.welie.blessed.BluetoothPeripheralManager;
 import com.welie.blessed.BluetoothPeripheralManagerCallback;
@@ -27,8 +24,11 @@ import com.welie.blessed.ReadResponse;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -48,6 +48,10 @@ class BluetoothServer {
     public static final String BLUETOOTH_SERVER_CONNECTION_EXTRA = "androidcrypto.bluetoothserver.connection.extra";
     public static final String BLUETOOTH_SERVER_SUBSCRIPTION = "androidcrypto.bluetoothserver.subscription";
     public static final String BLUETOOTH_SERVER_SUBSCRIPTION_EXTRA = "androidcrypto.bluetoothserver.subscription.extra";
+    // new in part 4
+    public static final String BLUETOOTH_SERVER_CONNECTED_DEVICES = "androidcrypto.bluetoothserver.connecteddevices";
+    public static final String BLUETOOTH_SERVER_CONNECTED_DEVICES_EXTRA = "androidcrypto.bluetoothserver.connecteddevices.extra";
+    String connectedDevicesString = "";
 
     public static synchronized BluetoothServer getInstance(Context context) {
         mContext = context; // new in part 2
@@ -154,6 +158,8 @@ class BluetoothServer {
             Intent intent = new Intent(BLUETOOTH_SERVER_CONNECTION);
             intent.putExtra(BLUETOOTH_SERVER_CONNECTION_EXTRA, "connected to MAC: " + central.getAddress());
             sendToMain(intent);
+            // new in part 4
+            sendConnectedDevicesToUi();
         }
 
         @Override
@@ -166,6 +172,8 @@ class BluetoothServer {
             Intent intent = new Intent(BLUETOOTH_SERVER_CONNECTION);
             intent.putExtra(BLUETOOTH_SERVER_CONNECTION_EXTRA, "DISCONNECTED from MAC: " + central.getAddress());
             sendToMain(intent);
+            // new in part 4
+            sendConnectedDevicesToUi();
         }
 
         @Override
@@ -217,6 +225,21 @@ class BluetoothServer {
         for (BluetoothGattService service : serviceImplementations.keySet()) {
             peripheralManager.add(service);
         }
+    }
+
+    private void sendConnectedDevicesToUi() {
+        // new in part 4
+        connectedDevicesString = "";
+        Set<BluetoothCentral> connectedCentrals = peripheralManager.getConnectedCentrals();
+        int connectedCentralSize = connectedCentrals.size();
+        Object[] bluetoothCentral = connectedCentrals.toArray();
+        for (int i = 0; i < connectedCentralSize; i++) {
+            connectedDevicesString += ((BluetoothCentral) bluetoothCentral[i]).getAddress();
+            connectedDevicesString += " " + ((BluetoothCentral) bluetoothCentral[i]).getName() + "\n";
+        }
+        Intent intent = new Intent(BLUETOOTH_SERVER_CONNECTED_DEVICES);
+        intent.putExtra(BLUETOOTH_SERVER_CONNECTED_DEVICES_EXTRA, connectedDevicesString);
+        sendToMain(intent);
     }
 
     BluetoothServer(Context context) {

@@ -3,6 +3,8 @@
 This is part 4 of the BLE server (peripheral) example using the code in 
 https://github.com/weliem/bluetooth-server-example.
 
+**This app is about exposing the connected devices to the user interface (UI).**
+
 Recent server and client apps:
 
 **Part 3: add a Battery Service to your server and client**
